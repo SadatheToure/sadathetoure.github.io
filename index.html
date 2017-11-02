@@ -20,119 +20,118 @@
 
         <!-- Charts Div -->
 
-        <div class="auth col-xs-6 col-md-4">
-          <strong>Authentication Type</strong>
-          <span class="reset" style="display: none;">Selected: <span class="filter"></span></span>
-          <a class="reset" href="javascript:authChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
+        <div class="container one">
+          <div class="auth col-xs-6 col-md-4">
+            <strong>Authentication Type</strong>
+            <span class="reset" style="display: none;">Selected: <span class="filter"></span></span>
+            <a class="reset" href="javascript:authChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
 
-          <div class="clearfix"></div>
+            <div class="clearfix"></div>
 
-        </div>
+          </div>
 
-        <div class="power col-xs-6 col-md-4">
-          <strong>Power Rating</strong>
-          <span class="reset" style="display: none;">Selected: <span class="filter"></span></span>
-          <a class="reset" href="javascript:powerChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
+          <div class="power col-xs-6 col-md-4">
+            <strong>Power Rating</strong>
+            <span class="reset" style="display: none;">Selected: <span class="filter"></span></span>
+            <a class="reset" href="javascript:powerChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
 
-          <div class="clearfix"></div>
-        </div>
+            <div class="clearfix"></div>
+          </div>
 
-        <div class="channel col-xs-6 col-md-4">
-          <strong>Channels Rating</strong>
-          <span class="reset" style="display: none;">Selected: <span class="filter"></span></span>
-          <a class="reset" href="javascript:channelChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
+          <div class="channel col-xs-6 col-md-4">
+            <strong>Channels Rating</strong>
+            <span class="reset" style="display: none;">Selected: <span class="filter"></span></span>
+            <a class="reset" href="javascript:channelChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
 
-          <div class="clearfix"></div>
-        </div>
-        <div class="">
-
-        </div>
-
-        <div class="table ">
-          <div class="dc-data-count">
-            <span class="filter-count"></span> selected out of <span class="total-count"></span> records | <a href="javascript:dc.filterAll(); dc.renderAll();">Reset All</a>
-
-            <table class="table table-striped table-hover dc-data-table">
-            </table>
+            <div class="clearfix"></div>
           </div>
         </div>
 
+        <div class="container two">
+          <div class="table ">
+            <div class="dc-data-count">
+              <span class="filter-count"></span> selected out of <span class="total-count"></span> records | <a href="javascript:dc.filterAll(); dc.renderAll();">Reset All</a>
 
+              <table class="table table-striped table-hover dc-data-table">
+              </table>
+            </div>
+          </div>
+
+        </div>
       </div>
-    </div>
 
-    <script src="crossfilter.js"></script>
-    <script src="d3.js"></script>
-    <script src="dc.js"></script>
+      <script src="crossfilter.js"></script>
+      <script src="d3.js"></script>
+      <script src="dc.js"></script>
 
-    <script>
-      var authChart = dc.rowChart(".auth"),
-        powerChart = dc.rowChart(".power"),
-        channelChart = dc.rowChart(".channel"),
-        visCount = dc.dataCount(".dc-data-count"),
-        visTable = dc.dataTable(".dc-data-table");
+      <script>
+        var authChart = dc.rowChart(".auth"),
+          powerChart = dc.rowChart(".power"),
+          channelChart = dc.rowChart(".channel"),
+          visCount = dc.dataCount(".dc-data-count"),
+          visTable = dc.dataTable(".dc-data-table");
 
-      d3.json("http://wifi-api.ngrok.io/api/wifidata", function(err, data) {
+        d3.json("http://wifi-api.ngrok.io/api/wifidata", function(err, data) {
 
-        if (err) throw err;
+          if (err) throw err;
 
-        data.forEach(function(d) {
-          d.date = new Date(d.date);
-        });
+          data.forEach(function(d) {
+            d.date = new Date(d.date);
+          });
 
-        var ndx = crossfilter(data);
-        var all = ndx.groupAll();
+          var ndx = crossfilter(data);
+          var all = ndx.groupAll();
 
-        var authenticationDim = ndx.dimension(function(d) {
-          return d.authentication;
-        });
-        var powerDim = ndx.dimension(function(d) {
-          return d.power;
-        });
-        var dateDim = ndx.dimension(function(d) {
-          return d.date;
-        });
-        var channelDim = ndx.dimension(function(d) {
-          return d.channel;
-        });
+          var authenticationDim = ndx.dimension(function(d) {
+            return d.authentication;
+          });
+          var powerDim = ndx.dimension(function(d) {
+            return +d.power;
+          });
+          var dateDim = ndx.dimension(function(d) {
+            return d.date;
+          });
+          var channelDim = ndx.dimension(function(d) {
+            return d.channel;
+          });
 
-        var authGroup = authenticationDim.group();
-        var powerGroup = powerDim.group();
-        var dateGroup = dateDim.group();
-        var channelGroup = channelDim.group();
+          var authGroup = authenticationDim.group();
+          var powerGroup = powerDim.group();
+          var dateGroup = dateDim.group();
+          var channelGroup = channelDim.group();
 
-        authChart
-          .dimension(authenticationDim)
-          .group(authGroup)
-          .elasticX(true);
+          authChart
+            .dimension(authenticationDim)
+            .group(authGroup)
+            .elasticX(true);
 
-        powerChart
-          .dimension(powerDim)
-          .group(powerGroup)
-          .elasticX(true);
+          powerChart
+            .dimension(powerDim)
+            .group(powerGroup)
+            .elasticX(true);
 
-        channelChart
-          .dimension(channelDim)
-          .group(channelGroup)
-          .elasticX(true);
+          channelChart
+            .dimension(channelDim)
+            .group(channelGroup)
+            .elasticX(true);
 
-        visCount
-          .dimension(ndx)
-          .group(all)
+          visCount
+            .dimension(ndx)
+            .group(all)
 
-        visTable
-          .dimension(dateDim)
-          .group(function(d) {
-            var format = d3.format('02d');
-            return d.date.getFullYear() + '/' + ((d.date.getMonth() + 1)) + '/' + ((d.date.getDate())) + ' ' + ((d.date.getHours())) + ':' + ((d.date.getMinutes()));
-          })
-          .columns([
-            "essid", "power", "channel", "privacy", "authentication", "beacons", "bssid"
-          ]);
-        dc.renderAll();
-
-      })
-    </script>
+          visTable
+            .dimension(dateDim)
+            .group(function(d) {
+              var format = d3.format('02d');
+              return d.date.getFullYear() + '/' + ((d.date.getMonth() + 1)) + '/' + ((d.date.getDate())) + ' ' + ((d.date.getHours())) + ':' + ((d.date.getMinutes()));
+            })
+            .columns([
+              "essid", "power", "channel", "privacy", "authentication", "beacons", "bssid"
+            ]);
+          dc.renderAll();
+          console.log(data);
+        })
+      </script>
 
   </body>
 
