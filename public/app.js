@@ -1,15 +1,12 @@
 $(document).ready(function() {
 
-
-
   var authChart = dc.rowChart(".auth"),
     powerChart = dc.rowChart(".power"),
     channelChart = dc.rowChart(".channel"),
     visCount = dc.dataCount(".dc-data-count"),
     visTable = dc.dataTable(".dc-data-table");
 
-  d3.json("http://wifi-api.ngrok.io/api/wifidata", function(err, data) {
-
+  d3.json("https://wifi-api.ngrok.io/api/wifidata", function(err, data) {
     if (err) throw err;
 
     data.forEach(function(d) {
@@ -64,9 +61,11 @@ $(document).ready(function() {
       })
       .columns([
         "essid", "power", "channel", "privacy", "authentication", "beacons", "bssid"
-      ]);
+      ])
+      .sortBy(function (d) {
+        return -d.power;
+    })
     dc.renderAll();
-    console.log(data);
-    $('#myModal').modal('show');
+    // $('#myModal').modal('show');
   })
 });
